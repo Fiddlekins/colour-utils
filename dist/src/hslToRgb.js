@@ -20,8 +20,8 @@ function hueToRgb(v1, v2, vH) {
     return v1;
 }
 function hslToRgb(hsl) {
-    const { h, s, l } = hsl;
-    const rgb = { r: 0, g: 0, b: 0 };
+    const { h, s, l, a } = hsl;
+    const rgb = { r: 0, g: 0, b: 0, a: a !== null && a !== void 0 ? a : 1 };
     if (s === 0) {
         rgb.r = l * 255;
         rgb.g = l * 255;

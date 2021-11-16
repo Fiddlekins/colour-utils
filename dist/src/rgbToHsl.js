@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rgbToHsl = void 0;
 function rgbToHsl(rgb) {
-    const { r, g, b } = rgb;
-    const hsl = { h: 0, s: 0, l: 0 };
+    const { r, g, b, a } = rgb;
+    const hsl = { h: 0, s: 0, l: 0, a: a !== null && a !== void 0 ? a : 1 };
     const var_R = r / 255;
     const var_G = g / 255;
     const var_B = b / 255;
