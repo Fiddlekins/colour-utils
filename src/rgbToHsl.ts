@@ -1,8 +1,8 @@
 import { HSL, RGB } from './index';
 
 export function rgbToHsl(rgb: RGB): HSL {
-    const { r, g, b } = rgb;
-    const hsl: HSL = { h: 0, s: 0, l: 0 };
+    const { r, g, b, a } = rgb;
+    const hsl: HSL = { h: 0, s: 0, l: 0, a: a ?? 1 };
 
     const var_R = r / 255;
     const var_G = g / 255;
