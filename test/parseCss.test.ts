@@ -176,62 +176,82 @@ describe('parseAngle', () => {
 
 describe('parseHex', () => {
     it('should parse "#RGB" correctly', () => {
-        const tests: [string, RGB | null][] = [
+        const positiveTests: [string, RGB][] = [
             ['#000', { r: 0, g: 0, b: 0, a: 1 }],
             ['#123', { r: 17, g: 34, b: 51, a: 1 }],
             ['#d6a', { r: 221, g: 102, b: 170, a: 1 }],
             ['#fff', { r: 255, g: 255, b: 255, a: 1 }],
-            ['#ggg', null],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            '#ggg',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseHex(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseHex.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
     it('should parse "#RGBA" correctly', () => {
-        const tests: [string, RGB | null][] = [
+        const positiveTests: [string, RGB][] = [
             ['#0000', { r: 0, g: 0, b: 0, a: 0 }],
             ['#0006', { r: 0, g: 0, b: 0, a: 0.4 }],
             ['#000f', { r: 0, g: 0, b: 0, a: 1 }],
             ['#1230', { r: 17, g: 34, b: 51, a: 0 }],
             ['#d6a6', { r: 221, g: 102, b: 170, a: 0.4 }],
             ['#ffff', { r: 255, g: 255, b: 255, a: 1 }],
-            ['#gggf', null],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            '#gggf',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseHex(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseHex.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
     it('should parse "#RRGGBB" correctly', () => {
-        const tests: [string, RGB | null][] = [
+        const positiveTests: [string, RGB][] = [
             ['#000000', { r: 0, g: 0, b: 0, a: 1 }],
             ['#112233', { r: 17, g: 34, b: 51, a: 1 }],
             ['#dd66aa', { r: 221, g: 102, b: 170, a: 1 }],
             ['#ffffff', { r: 255, g: 255, b: 255, a: 1 }],
-            ['#gggggg', null],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            '#gggggg',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseHex(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseHex.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
     it('should parse "#RRGGBBAA" correctly', () => {
-        const tests: [string, RGB | null][] = [
+        const positiveTests: [string, RGB][] = [
             ['#00000000', { r: 0, g: 0, b: 0, a: 0 }],
             ['#00000066', { r: 0, g: 0, b: 0, a: 0.4 }],
             ['#000000ff', { r: 0, g: 0, b: 0, a: 1 }],
             ['#11223300', { r: 17, g: 34, b: 51, a: 0 }],
             ['#dd66aa66', { r: 221, g: 102, b: 170, a: 0.4 }],
             ['#ffffffff', { r: 255, g: 255, b: 255, a: 1 }],
-            ['#ggggggff', null],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            '#ggggggff',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseHex(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseHex.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
 });
 
 describe('parseRgb', () => {
     it('should parse "rgb(R G B)" correctly', () => {
-        const tests: [string, RGB | null][] = [
+        const positiveTests: [string, RGB][] = [
             ['rgb(0 0 0)', { r: 0, g: 0, b: 0, a: 1 }],
             ['rgb(17 34 51)', { r: 17, g: 34, b: 51, a: 1 }],
             ['rgb(221 102 170)', { r: 221, g: 102, b: 170, a: 1 }],
@@ -242,12 +262,18 @@ describe('parseRgb', () => {
             ['rgb(17.123 34% 51)', { r: 17.123, g: 86.7, b: 51, a: 1 }],
             ['rgb(0.001 102 70.123%)', { r: 0.001, g: 102, b: 178.81365000000002, a: 1 }],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            'rgb(0 0 0 / 0)',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseRgb(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseRgb.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
     it('should parse "rgb(R, G, B)" correctly', () => {
-        const tests: [string, RGB | null][] = [
+        const positiveTests: [string, RGB][] = [
             ['rgb(0, 0, 0)', { r: 0, g: 0, b: 0, a: 1 }],
             ['rgb(17, 34, 51)', { r: 17, g: 34, b: 51, a: 1 }],
             ['rgb(221, 102, 170)', { r: 221, g: 102, b: 170, a: 1 }],
@@ -258,15 +284,40 @@ describe('parseRgb', () => {
             ['rgb(17.123, 34%, 51)', { r: 17.123, g: 86.7, b: 51, a: 1 }],
             ['rgb(0.001, 102, 70.123%)', { r: 0.001, g: 102, b: 178.81365000000002, a: 1 }],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            'rgb(0, 0, 0, 0)',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseRgb(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseRgb.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
     it('should parse "rgba(R G B / A)" correctly', () => {
-        expect(parseRgb('rgba(0 0 0 / 0)')).to.deep.equal({ r: 0, g: 0, b: 0, a: 0 });
+        const positiveTests: [string, RGB][] = [
+            ['rgba(0 0 0 / 0)', { r: 0, g: 0, b: 0, a: 0 }],
+            ['rgba(17 34 51 / 0.5)', { r: 17, g: 34, b: 51, a: 0.5 }],
+            ['rgba(221 102 170 / 10%)', { r: 221, g: 102, b: 170, a: 0.1 }],
+            ['rgba(255 255 255 / 1)', { r: 255, g: 255, b: 255, a: 1 }],
+            ['rgba(300 300 300 / 300)', { r: 255, g: 255, b: 255, a: 1 }],
+            ['rgba(-300 -300 -300 / -300)', { r: 0, g: 0, b: 0, a: 0 }],
+            ['rgba(-300 300 -300 / 300)', { r: 0, g: 255, b: 0, a: 1 }],
+            ['rgba(17.123 34% 51 / 11.111%)', { r: 17.123, g: 86.7, b: 51, a: 0.11111 }],
+            ['rgba(0.001 102 70.123% / 0.567)', { r: 0.001, g: 102, b: 178.81365000000002, a: 0.567 }],
+        ];
+        const negativeTests: string[] = [
+            'rgba(0 0 0)',
+        ];
+        for (const [input, output] of positiveTests) {
+            expect(parseRgb(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseRgb.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
+        }
     });
     it('should parse "rgba(R, G, B, A)" correctly', () => {
-        const tests: [string, RGB | null][] = [
+        const positiveTests: [string, RGB][] = [
             ['rgba(0, 0, 0, 0)', { r: 0, g: 0, b: 0, a: 0 }],
             ['rgba(17, 34, 51, 0.5)', { r: 17, g: 34, b: 51, a: 0.5 }],
             ['rgba(221, 102, 170, 10%)', { r: 221, g: 102, b: 170, a: 0.1 }],
@@ -277,15 +328,21 @@ describe('parseRgb', () => {
             ['rgba(17.123, 34%, 51, 11.111%)', { r: 17.123, g: 86.7, b: 51, a: 0.11111 }],
             ['rgba(0.001, 102, 70.123%, 0.567)', { r: 0.001, g: 102, b: 178.81365000000002, a: 0.567 }],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            'rgba(0, 0, 0)',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseRgb(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseRgb.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
 });
 
 describe('parseHsl', () => {
     it('should parse "hsl(H S L)" correctly', () => {
-        const tests: [string, HSL | null][] = [
+        const positiveTests: [string, HSL][] = [
             ['hsl(0 0% 0%)', { h: 0, s: 0, l: 0, a: 1 }],
             ['hsl(90 50% 50%)', { h: 0.25, s: 0.5, l: 0.5, a: 1 }],
             ['hsl(90deg 50% 50%)', { h: 0.25, s: 0.5, l: 0.5, a: 1 }],
@@ -296,14 +353,19 @@ describe('parseHsl', () => {
             ['hsl(-540 -150% -150%)', { h: 0.5, s: 0, l: 0, a: 1 }],
             ['hsl(540 150% 150%)', { h: 0.5, s: 1, l: 1, a: 1 }],
             ['hsl(0.1turn 0.1% 99.8%)', { h: 0.1, s: 0.001, l: 0.998, a: 1 }],
-            ['hsl(0.1turn 1 99.99%)', null],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            'hsl(0.1turn 1 99.99%)',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseHsl(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseHsl.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
     it('should parse "hsl(H, S, L)" correctly', () => {
-        const tests: [string, HSL | null][] = [
+        const positiveTests: [string, HSL][] = [
             ['hsl(0, 0%, 0%)', { h: 0, s: 0, l: 0, a: 1 }],
             ['hsl(90, 50%, 50%)', { h: 0.25, s: 0.5, l: 0.5, a: 1 }],
             ['hsl(90deg, 50%, 50%)', { h: 0.25, s: 0.5, l: 0.5, a: 1 }],
@@ -314,14 +376,19 @@ describe('parseHsl', () => {
             ['hsl(-540, -150%, -150%)', { h: 0.5, s: 0, l: 0, a: 1 }],
             ['hsl(540, 150%, 150%)', { h: 0.5, s: 1, l: 1, a: 1 }],
             ['hsl(0.1turn, 0.1%, 99.8%)', { h: 0.1, s: 0.001, l: 0.998, a: 1 }],
-            ['hsl(0.1turn, 1, 99.99%)', null],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            'hsl(0.1turn, 1, 99.99%)',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseHsl(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseHsl.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
     it('should parse "hsla(H S L / A)" correctly', () => {
-        const tests: [string, HSL | null][] = [
+        const positiveTests: [string, HSL][] = [
             ['hsla(0 0% 0% / 0)', { h: 0, s: 0, l: 0, a: 0 }],
             ['hsla(90 50% 50% / 0%)', { h: 0.25, s: 0.5, l: 0.5, a: 0 }],
             ['hsla(90deg 50% 50% / 00%)', { h: 0.25, s: 0.5, l: 0.5, a: 0 }],
@@ -332,14 +399,19 @@ describe('parseHsl', () => {
             ['hsla(-540 -150% -150% / -2)', { h: 0.5, s: 0, l: 0, a: 0 }],
             ['hsla(540 150% 150% / 2)', { h: 0.5, s: 1, l: 1, a: 1 }],
             ['hsla(0.1turn 0.1% 99.8% / -200%)', { h: 0.1, s: 0.001, l: 0.998, a: 0 }],
-            ['hsla(0.1turn 1 99.99% / -1%)', null],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            'hsla(0.1turn 1 99.99% / -1%)',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseHsl(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseHsl.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
     it('should parse "hsla(H, S, L, A)" correctly', () => {
-        const tests: [string, HSL | null][] = [
+        const positiveTests: [string, HSL][] = [
             ['hsla(0, 0%, 0%, 0)', { h: 0, s: 0, l: 0, a: 0 }],
             ['hsla(90, 50%, 50%, 0%)', { h: 0.25, s: 0.5, l: 0.5, a: 0 }],
             ['hsla(90deg, 50%, 50%, 00%)', { h: 0.25, s: 0.5, l: 0.5, a: 0 }],
@@ -350,10 +422,15 @@ describe('parseHsl', () => {
             ['hsla(-540, -150%, -150%, -2)', { h: 0.5, s: 0, l: 0, a: 0 }],
             ['hsla(540, 150%, 150%, 2)', { h: 0.5, s: 1, l: 1, a: 1 }],
             ['hsla(0.1turn, 0.1%, 99.8%, -200%)', { h: 0.1, s: 0.001, l: 0.998, a: 0 }],
-            ['hsla(0.1turn, 1, 99.99%, -1%)', null],
         ];
-        for (const [input, output] of tests) {
+        const negativeTests: string[] = [
+            'hsla(0.1turn, 1, 99.99%, -1%)',
+        ];
+        for (const [input, output] of positiveTests) {
             expect(parseHsl(input)).to.deep.equal(output, `for input ${input}`);
+        }
+        for (const input of negativeTests) {
+            expect(parseHsl.bind(null, input)).to.throw(Error, /invalid/i, `for input ${input}`);
         }
     });
 });

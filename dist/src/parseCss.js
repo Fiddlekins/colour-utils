@@ -77,7 +77,7 @@ function parseHex(css) {
             }
         }
         else {
-            return null;
+            throw new Error(`Invalid colour hex format: ${css}`);
         }
     }
     const r = parseInt(rString, 16);
@@ -107,7 +107,7 @@ function parseRgb(css) {
         match = css.match(/^rgba\((-?[\d.]+%?) +(-?[\d.]+%?) +(-?[\d.]+%?) *\/ *(-?[\d.]+%?)\)$/);
     }
     if (!match) {
-        return null;
+        throw new Error(`Invalid colour rgb function format: ${css}`);
     }
     const [, rString, gString, bString, aString] = match;
     const r = parseColourChannelString(rString);
@@ -134,7 +134,7 @@ function parseHsl(css) {
         match = css.match(/^hsla\((-?[\d.]+)(deg|rad|grad|turn)? +(-?[\d.]+%) +(-?[\d.]+%) *\/ *(-?[\d.]+%?)\)$/);
     }
     if (!match) {
-        return null;
+        throw new Error(`Invalid colour hsl function format: ${css}`);
     }
     const [, hString, angleUnit, sString, lString, aString] = match;
     const h = parseAngle(hString, angleUnit);
@@ -150,29 +150,23 @@ function parseCssToRgb(css) {
             return parseHex(css);
         case /^rgb/.test(css):
             return parseRgb(css);
-        case /^hsl/.test(css): {
-            const hsl = parseHsl(css);
-            return hsl ? (0, index_1.hslToRgb)(hsl) : null;
-        }
+        case /^hsl/.test(css):
+            return (0, index_1.hslToRgb)(parseHsl(css));
         default:
-            return null;
+            throw new Error(`Invalid colour css format: ${css}`);
     }
 }
 exports.parseCssToRgb = parseCssToRgb;
 function parseCssToHsl(css) {
     switch (true) {
-        case /^#/.test(css): {
-            const rgb = parseHex(css);
-            return rgb ? (0, index_1.rgbToHsl)(rgb) : null;
-        }
-        case /^rgb/.test(css): {
-            const rgb = parseRgb(css);
-            return rgb ? (0, index_1.rgbToHsl)(rgb) : null;
-        }
+        case /^#/.test(css):
+            return (0, index_1.rgbToHsl)(parseHex(css));
+        case /^rgb/.test(css):
+            return (0, index_1.rgbToHsl)(parseRgb(css));
         case /^hsl/.test(css):
             return parseHsl(css);
         default:
-            return null;
+            throw new Error(`Invalid colour css format: ${css}`);
     }
 }
 exports.parseCssToHsl = parseCssToHsl;

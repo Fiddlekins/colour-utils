@@ -45,7 +45,7 @@ export function parseAngle(angle: string, unit = 'deg'): number {
     return Math.abs(value < 0 ? value + 1 : value);
 }
 
-export function parseHex(css: string): RGB | null {
+export function parseHex(css: string): RGB {
     let match;
     let rString;
     let gString;
@@ -73,7 +73,7 @@ export function parseHex(css: string): RGB | null {
                 aString = a;
             }
         } else {
-            return null;
+            throw new Error(`Invalid colour hex format: ${css}`);
         }
     }
     const r = parseInt(rString, 16);
@@ -86,7 +86,7 @@ export function parseHex(css: string): RGB | null {
     return { r, g, b, a };
 }
 
-export function parseRgb(css: string): RGB | null {
+export function parseRgb(css: string): RGB {
     let match;
     // rgb(1,2,3) or rgb(10%,20%,30%)
     match = css.match(/^rgb\((-?[\d.]+%?), *(-?[\d.]+%?), *(-?[\d.]+%?)\)$/);
@@ -103,7 +103,7 @@ export function parseRgb(css: string): RGB | null {
         match = css.match(/^rgba\((-?[\d.]+%?) +(-?[\d.]+%?) +(-?[\d.]+%?) *\/ *(-?[\d.]+%?)\)$/);
     }
     if (!match) {
-        return null;
+        throw new Error(`Invalid colour rgb function format: ${css}`);
     }
     const [, rString, gString, bString, aString] = match;
     const r = parseColourChannelString(rString);
@@ -113,7 +113,7 @@ export function parseRgb(css: string): RGB | null {
     return { r, g, b, a };
 }
 
-export function parseHsl(css: string): HSL | null {
+export function parseHsl(css: string): HSL {
     let match;
     // hsl(1,2%,3%) or hsl(10deg,20%,30%)
     match = css.match(/^hsl\((-?[\d.]+)(deg|rad|grad|turn)?, *(-?[\d.]+%), *(-?[\d.]+%)\)$/);
@@ -130,7 +130,7 @@ export function parseHsl(css: string): HSL | null {
         match = css.match(/^hsla\((-?[\d.]+)(deg|rad|grad|turn)? +(-?[\d.]+%) +(-?[\d.]+%) *\/ *(-?[\d.]+%?)\)$/);
     }
     if (!match) {
-        return null;
+        throw new Error(`Invalid colour hsl function format: ${css}`);
     }
     const [, hString, angleUnit, sString, lString, aString] = match;
     const h = parseAngle(hString, angleUnit);
@@ -140,34 +140,28 @@ export function parseHsl(css: string): HSL | null {
     return { h, s, l, a };
 }
 
-export function parseCssToRgb(css: string): RGB | null {
+export function parseCssToRgb(css: string): RGB {
     switch (true) {
         case /^#/.test(css):
             return parseHex(css);
         case /^rgb/.test(css):
             return parseRgb(css);
-        case /^hsl/.test(css): {
-            const hsl = parseHsl(css);
-            return hsl ? hslToRgb(hsl) : null;
-        }
+        case /^hsl/.test(css):
+            return hslToRgb(parseHsl(css));
         default:
-            return null;
+            throw new Error(`Invalid colour css format: ${css}`);
     }
 }
 
-export function parseCssToHsl(css: string): HSL | null {
+export function parseCssToHsl(css: string): HSL {
     switch (true) {
-        case /^#/.test(css): {
-            const rgb = parseHex(css);
-            return rgb ? rgbToHsl(rgb) : null;
-        }
-        case /^rgb/.test(css): {
-            const rgb = parseRgb(css);
-            return rgb ? rgbToHsl(rgb) : null;
-        }
+        case /^#/.test(css):
+            return rgbToHsl(parseHex(css));
+        case /^rgb/.test(css):
+            return rgbToHsl(parseRgb(css));
         case /^hsl/.test(css):
             return parseHsl(css);
         default:
-            return null;
+            throw new Error(`Invalid colour css format: ${css}`);
     }
 }
